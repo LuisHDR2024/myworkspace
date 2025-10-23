@@ -33,20 +33,23 @@ x-airflow-common:
   # In order to add custom dependencies or upgrade provider distributions you can use your extended image.
   # Comment the image line, place your Dockerfile in the directory where you placed the docker-compose.yaml
   # and uncomment the "build" line below, Then run `docker-compose build` to build the images.
-  image: ${AIRFLOW_IMAGE_NAME:-apache/airflow:3.1.0}
-  # build: .
+
+  # image: ${AIRFLOW_IMAGE_NAME:-apache/airflow:3.1.0}
+  build: .
   environment:
     &airflow-common-env # creamos un ancla para reutilizar la configuración común de lo de abajo (como un copy)
     AIRFLOW__CORE__EXECUTOR: LocalExecutor
     AIRFLOW__CORE__AUTH_MANAGER: airflow.providers.fab.auth_manager.fab_auth_manager.FabAuthManager
 
-    # ---------- Database settings ---------- #
-    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+    # ---------- Database settings ---------- #       configuracion para la base de datos Postgres, considerar si se usa contenedor o externo
+    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}
+
+
     # AIRFLOW__CELERY__RESULT_BACKEND: db+postgresql://airflow:airflow@postgres/airflow
     # AIRFLOW__CELERY__BROKER_URL: redis://:@redis:6379/0
     AIRFLOW__CORE__FERNET_KEY: ''
     AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
-    AIRFLOW__CORE__LOAD_EXAMPLES: 'true'
+    AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
     AIRFLOW__CORE__EXECUTION_API_SERVER_URL: 'http://airflow-apiserver:8080/execution/'
 
     AIRFLOW__SCHEDULER__ENABLE_HEALTH_CHECK: 'true'
@@ -67,7 +70,7 @@ x-airflow-common:
                                   # considerar si se usa una base de datos externa
 
 #--------------------------------------------------------------
-# contenedor con la base de datos Postgres
+# contenedor con la base de datos Postgres (solo test/desarrollo)
 #--------------------------------------------------------------
 services:
   postgres:

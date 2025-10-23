@@ -1,11 +1,13 @@
-Creacion de usuarios en la terminal del contenedor
+Activar el sistema comandos linux VM:
 
-docker exec -it airflow-webserver airflow users create \
-  --username admin \
-  --firstname Luis \
-  --lastname Dominguez \
-  --role Admin \
-  --email admin@example.com \
-  --password admin
+# ------ crea el archivo config ----- #
+docker compose run airflow-cli airflow config list
 
-  
+# ------ si hay problemas de permisos ----- #
+sudo chmod -R 777 ./config
+
+# ------ inicializar la configuracion, como usuarios en la DB  ----- #
+sudo docker compose up airflow-init
+
+# ------ Arranca toda la red de contenedores  ----- #
+sudo docker compose up -d
