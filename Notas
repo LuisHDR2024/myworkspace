@@ -1,5 +1,10 @@
 Activar el sistema comandos linux VM:
 
+# ------ ya instalado git y docker composem, en la carpea del proyecto ----- #
+sudo chown -R 50000:0 ./config ./dags ./logs
+sudo chmod -R 775 ./config ./dags ./logs
+# otorgara permisos al usuario con UID 50000 (airflow) y grupo 0 (root)
+
 # ------ crea el archivo config ----- #
 docker compose run airflow-cli airflow config list
 
@@ -11,3 +16,9 @@ sudo docker compose up airflow-init
 
 # ------ Arranca toda la red de contenedores  ----- #
 sudo docker compose up -d
+
+# ------ Verifica que los contenedores esten corriendo ----- #
+sudo docker ps -a
+sudo docker compose ps
+
+
